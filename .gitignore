@@ -25,3 +25,7 @@ ENV/
 # Pipenv (optional - uncomment if you prefer not to commit lock file)
 Pipfile.lock 
 .lock*
+
+# Music discovery data
+music_discovery/data/
+music_discovery/.history
