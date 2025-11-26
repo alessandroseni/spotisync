@@ -5,6 +5,7 @@ Spotisync - Sync Spotify liked songs to a public playlist
 
 import os
 import sys
+from datetime import datetime
 from dotenv import load_dotenv
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -139,6 +140,23 @@ class Spotisync:
         
         print(f"✅ Successfully added {added_count} tracks to playlist")
 
+    def update_playlist_description(self, playlist_id):
+        """Update playlist description with current timestamp"""
+        print("📝 Updating playlist description...")
+        
+        # Format timestamp as "Nov 26, 2025 at 2:30 PM"
+        timestamp = datetime.now().strftime("%b %d, %Y at %-I:%M %p")
+        description = f"Last updated: {timestamp}"
+        
+        try:
+            self.sp.playlist_change_details(
+                playlist_id,
+                description=description
+            )
+            print(f"✅ Updated description: {description}")
+        except Exception as e:
+            print(f"⚠️  Warning: Could not update description: {e}")
+
     def run(self):
         """Main execution method"""
         print("🚀 Starting Spotisync...")
@@ -159,6 +177,9 @@ class Spotisync:
             
             # Step 4: Add liked songs (newest first)
             self.add_tracks_to_playlist(playlist_id, liked_songs)
+            
+            # Step 5: Update playlist description with timestamp
+            self.update_playlist_description(playlist_id)
             
             print("🎉 Spotisync completed successfully!")
             print(f"   Playlist now contains {len(liked_songs)} tracks")
