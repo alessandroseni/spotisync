@@ -5,6 +5,7 @@ Spotisync - Sync Spotify liked songs to a public playlist
 
 import os
 import sys
+import base64
 from datetime import datetime
 from dotenv import load_dotenv
 import spotipy
@@ -21,6 +22,7 @@ class Spotisync:
         self.client_secret = os.getenv('SPOTIPY_CLIENT_SECRET')
         self.redirect_uri = os.getenv('SPOTIPY_REDIRECT_URI')
         self.playlist_id = os.getenv('PLAYLIST_ID')
+        self.cover_image_path = os.getenv('COVER_IMAGE_PATH', 'Jazz Drummer 2.jpeg')
         
         # Validate required environment variables
         if not all([self.client_id, self.client_secret, self.redirect_uri, self.playlist_id]):
@@ -29,7 +31,7 @@ class Spotisync:
             sys.exit(1)
         
         # Set up Spotify client with proper scopes
-        scope = "user-library-read playlist-modify-public playlist-modify-private"
+        scope = "user-library-read playlist-modify-public playlist-modify-private ugc-image-upload"
         
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
             client_id=self.client_id,
@@ -157,6 +159,36 @@ class Spotisync:
         except Exception as e:
             print(f"⚠️  Warning: Could not update description: {e}")
 
+    def upload_cover_image(self, playlist_id):
+        """Upload custom cover image to the playlist"""
+        print("🖼️  Uploading playlist cover image...")
+        
+        # Resolve path relative to script location
+        if not os.path.isabs(self.cover_image_path):
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            image_path = os.path.join(script_dir, self.cover_image_path)
+        else:
+            image_path = self.cover_image_path
+        
+        if not os.path.exists(image_path):
+            print(f"⚠️  Warning: Cover image not found at {image_path}")
+            return
+        
+        # Check file size (max 256 KB)
+        file_size = os.path.getsize(image_path)
+        if file_size > 256 * 1024:
+            print(f"⚠️  Warning: Image too large ({file_size // 1024} KB). Max is 256 KB.")
+            return
+        
+        try:
+            with open(image_path, 'rb') as image_file:
+                image_b64 = base64.b64encode(image_file.read()).decode('utf-8')
+            
+            self.sp.playlist_upload_cover_image(playlist_id, image_b64)
+            print(f"✅ Uploaded cover image: {os.path.basename(image_path)}")
+        except Exception as e:
+            print(f"⚠️  Warning: Could not upload cover image: {e}")
+
     def run(self):
         """Main execution method"""
         print("🚀 Starting Spotisync...")
@@ -180,6 +212,9 @@ class Spotisync:
             
             # Step 5: Update playlist description with timestamp
             self.update_playlist_description(playlist_id)
+            
+            # Step 6: Upload cover image
+            self.upload_cover_image(playlist_id)
             
             print("🎉 Spotisync completed successfully!")
             print(f"   Playlist now contains {len(liked_songs)} tracks")
