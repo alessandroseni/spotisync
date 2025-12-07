@@ -22,7 +22,7 @@ class Spotisync:
         self.client_secret = os.getenv('SPOTIPY_CLIENT_SECRET')
         self.redirect_uri = os.getenv('SPOTIPY_REDIRECT_URI')
         self.playlist_id = os.getenv('PLAYLIST_ID')
-        self.cover_image_path = os.getenv('COVER_IMAGE_PATH', 'Jazz Drummer 2.jpeg')
+        self.cover_image_path = os.getenv('COVER_IMAGE_PATH', 'assets/Jazz Drummer 2.jpeg')
         
         # Validate required environment variables
         if not all([self.client_id, self.client_secret, self.redirect_uri, self.playlist_id]):
