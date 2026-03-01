@@ -2,7 +2,7 @@
 
 .DEFAULT_GOAL := help
 
-help: ## Show available commands
+help list: ## Show available commands
 	@echo "Spotisync & Lot Radio Finder"
 	@echo "============================"
 	@echo ""
@@ -38,6 +38,15 @@ radio: ## Run Lot Radio Artist Finder
 	@echo "🎵📻 Lot Radio Artist Finder"
 	@echo "============================================"
 	pipenv run python lot_radio_finder.py
+
+suggest: ## Run Playlist Suggester (deduplication + AI suggestions)
+	@if [ ! -f .env ]; then \
+		echo "❌ .env file not found! Run: make setup"; \
+		exit 1; \
+	fi
+	@echo "🎵🤖 Playlist Suggester"
+	@echo "============================================"
+	pipenv run python playlist_suggester.py
 
 clean: ## Remove cache files
 	@echo "🧹 Cleaning cache files..."

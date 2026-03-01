@@ -6,6 +6,10 @@ A Python tool that automatically syncs your Spotify liked songs to a public play
 
 An AI-powered tool that matches your Spotify listening habits with The Lot Radio NYC's schedule and discovers new music recommendations.
 
+# Playlist Suggester 🎵🤖
+
+An AI-powered playlist analytics tool that detects duplicate tracks and suggests new music additions based on your existing playlist content.
+
 ## What It Does
 
 ### Spotisync
@@ -19,6 +23,13 @@ An AI-powered tool that matches your Spotify listening habits with The Lot Radio
 - 🎵 **Comprehensive Spotify Analysis** - Fetches 100s of artists across all time ranges
 - 🤖 **AI-Powered Matching** - Uses OpenAI GPT-4 to find artistic similarities and recommendations
 - 📊 **Detailed Insights** - Comprehensive analysis of your music taste vs Lot Radio programming
+
+### Playlist Suggester
+- 🔍 **Duplicate Detection** - Identifies duplicate tracks including different versions (Live, Acoustic, Remastered)
+- 🤖 **AI-Powered Suggestions** - Get 15-20 smart track recommendations that fit your playlist's vibe
+- 📊 **Deep Analysis** - Analyzes artist frequency, era distribution, and musical patterns
+- ✨ **Creative Balance** - Suggests both deep cuts from existing artists and related new artists
+- 📖 **Read-Only** - Safe analytics tool that never modifies your playlist
 
 ## Setup
 
@@ -43,10 +54,13 @@ An AI-powered tool that matches your Spotify listening habits with The Lot Radio
    - Click "Settings" in the top right
    - Copy your **Client ID** and **Client Secret** (click "View client secret")
 
-4. **Create a Target Playlist** (For Spotisync)
-   - Go to Spotify and create a new playlist where you want your liked songs synced
-   - Make sure it's set to **Public** if you want others to see it
-   - Copy the playlist ID from the URL (e.g., `spotify.com/playlist/YOUR_PLAYLIST_ID`)
+4. **Create Target Playlists**
+   - **For Spotisync**: Create a new playlist where you want your liked songs synced
+     - Make sure it's set to **Public** if you want others to see it
+     - Copy the playlist ID from the URL (e.g., `spotify.com/playlist/YOUR_PLAYLIST_ID`)
+   - **For Playlist Suggester**: Use any existing playlist you want to analyze
+     - Can be public or private
+     - Copy the playlist ID from the URL
 
 ### 2. Get OpenAI API Key (For Lot Radio Finder)
 
@@ -88,20 +102,28 @@ SPOTIPY_REDIRECT_URI=http://127.0.0.1:8080/callback
 # Required for Spotisync
 PLAYLIST_ID=your_playlist_id_from_step_1
 
-# Required for Lot Radio Finder
+# Required for Lot Radio Finder and Playlist Suggester
 OPENAI_API_KEY=your_openai_api_key_from_step_2
+
+# Required for Playlist Suggester
+SUGGESTIONS_PLAYLIST_ID=your_playlist_id_to_analyze
 ```
 
 ## How to Run
 
 ### Spotisync
 ```bash
-./run.sh
+make sync
 ```
 
 ### Lot Radio Finder
 ```bash
-./lot_radio.sh
+make radio
+```
+
+### Playlist Suggester
+```bash
+make suggest
 ```
 
 ### First Time Setup
@@ -125,7 +147,14 @@ OPENAI_API_KEY=your_openai_api_key_from_step_2
 - ✅ **Exact Matches** - Finds artists you know who are playing this week
 - ✅ **Smart Recommendations** - Suggests shows based on your music taste
 - ✅ **Terminal-Friendly** - Clean output format designed for terminal use
-- ✅ **AI Analysis** - Powered by OpenAI GPT-4.1 for accurate recommendations
+- ✅ **AI Analysis** - Powered by OpenAI GPT-4 for accurate recommendations
+
+### Playlist Suggester
+- ✅ **Duplicate Detection** - Identifies exact and version duplicates automatically
+- ✅ **AI Suggestions** - Get 15-20 personalized track recommendations
+- ✅ **Musical Analysis** - Deep understanding of your playlist's vibe and patterns
+- ✅ **Safe & Read-Only** - Never modifies your playlists, just provides insights
+- ✅ **One Command** - Simple `make suggest` to run the full analysis
 
 ## Troubleshooting
 
@@ -143,3 +172,11 @@ OPENAI_API_KEY=your_openai_api_key_from_step_2
 **Selenium issues with Lot Radio Finder**
 - Make sure Chrome and ChromeDriver are installed
 - Try running `pip install selenium` if not included in pipenv
+
+**"Missing SUGGESTIONS_PLAYLIST_ID"**
+- Add your playlist ID to the `.env` file
+- Get the ID from your Spotify playlist URL: `spotify.com/playlist/YOUR_PLAYLIST_ID`
+
+**Playlist Suggester taking a long time**
+- Analysis typically takes 30-60 seconds depending on playlist size
+- The OpenAI API call processes all tracks at once for comprehensive analysis

@@ -807,12 +807,11 @@ Please provide a structured response that covers all these areas with specific e
 
         # Call OpenAI API
         response = openai.chat.completions.create(
-            model="gpt-4.1",  # Using GPT-4.1 as requested
+            model="gpt-5.2",  # Using GPT-5.2 as requested
             messages=[
                 {"role": "system", "content": "You are a music expert specializing in electronic music, underground scenes, and radio curation. You have deep knowledge of music genres, artist relationships, and can identify musical similarities across different styles. Format your output for terminal display, not markdown."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=2500,
             temperature=0.7
         )
         
